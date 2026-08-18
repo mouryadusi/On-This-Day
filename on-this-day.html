@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>On This Day</title>
+<meta name="description" content="What happened here, on this day — an editorial journey through history, scaled to the place you choose.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e0d;
+  --bg-lift:#151513;
+  --paper:#f4f1ea;
+  --ink:#1b1a17;
+  --muted:#8f897a;
+  --muted-2:#c9c2b2;
+  --line:rgba(244,241,234,0.14);
+  --accent:#c7602f;
+  --f-display:'Fraunces', ui-serif, Georgia, serif;
+  --f-sans:'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *,*::before,*::after{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
+body{
+  margin:0; background:var(--bg); color:var(--muted-2); font-family:var(--f-sans);
+  -webkit-font-smoothing:antialiased; font-size:16px; line-height:1.5;
+}
+img{max-width:100%; display:block;}
+button{font-family:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:0;}
+a{color:inherit; text-decoration:none;}
+::selection{background:var(--accent); color:#fff;}
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{outline:1px solid var(--accent); outline-offset:4px;}
+.sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);}
+.skip{position:absolute; left:10px; top:-50px; background:var(--accent); color:#fff; padding:10px 16px; z-index:999; transition:top .2s;}
+.skip:focus{top:10px;}
+#live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);}
+
+/* ---- HEADER ---- */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:26px clamp(20px,5vw,56px); mix-blend-mode:difference;
+}
+.mark{font-family:var(--f-display); font-size:1rem; letter-spacing:0.02em; color:#fff; font-weight:500;}
+.head-right{display:flex; align-items:center; gap:26px;}
+.loc-trigger{
+  font-family:var(--f-sans); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:#fff;
+  border-bottom:1px solid rgba(255,255,255,0.35); padding-bottom:2px;
+}
+
+/* ---- HERO ---- */
+.hero{
+  min-height:100svh; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:120px 24px 80px; overflow:hidden;
+}
+.hero-art{position:absolute; inset:0; z-index:0;}
+.hero-content{position:relative; z-index:2; display:flex; flex-direction:column; align-items:center;}
+.hero-date-btn{
+  font-family:var(--f-sans); font-size:clamp(0.72rem,1.4vw,0.85rem); letter-spacing:0.32em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:22px; border-bottom:1px solid transparent; transition:color .3s,border-color .3s;
+}
+.hero-date-btn:hover{color:var(--paper); border-color:var(--line);}
+.hero-question{
+  font-family:var(--f-display); font-weight:300; font-style:italic; color:var(--paper);
+  font-size:clamp(2.4rem,8vw,6.2rem); line-height:1.02; letter-spacing:-0.01em; max-width:16ch;
+  opacity:0; transform:translateY(18px); animation:rise 1.1s cubic-bezier(.16,.8,.3,1) forwards .15s;
+}
+@keyframes rise{ to{opacity:1; transform:translateY(0);} }
+.hero-loc{
+  margin-top:30px; font-family:var(--f-sans); font-size:0.85rem; letter-spacing:0.03em; color:var(--muted-2);
+  opacity:0; animation:rise 1.1s cubic-bezier(.16,.8,.3,1) forwards .4s;
+}
+.hero-loc span{color:var(--muted); margin:0 8px;}
+.hero-loc button{border-bottom:1px solid transparent; padding-bottom:1px; transition:color .25s,border-color .25s;}
+.hero-loc button:hover, .hero-loc button.current{color:var(--paper); border-color:var(--accent);}
+.hero-tagline{
+  margin-top:64px; font-family:var(--f-display); font-style:italic; font-weight:300; font-size:clamp(1rem,1.6vw,1.25rem);
+  color:var(--muted); opacity:0; animation:rise 1.1s cubic-bezier(.16,.8,.3,1) forwards .7s;
+}
+.scroll-cue{
+  position:absolute; bottom:34px; left:50%; transform:translateX(-50%); z-index:2;
+  font-family:var(--f-sans); font-size:0.62rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--muted);
+  opacity:0; animation:rise 1s ease forwards 1.1s; display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.scroll-cue .stem{width:1px; height:34px; background:linear-gradient(var(--muted), transparent); animation:stem 2.4s ease-in-out infinite;}
+@keyframes stem{ 0%,100%{transform:scaleY(0.6); opacity:.5;} 50%{transform:scaleY(1); opacity:1;} }
+
+#datepicker{position:absolute; opacity:0; width:1px; height:1px; pointer-events:none;}
+
+/* ---- SECTIONS ---- */
+section.block{padding:0 clamp(20px,6vw,90px);}
+.block-head{max-width:1100px; margin:0 auto; padding-top:120px; display:flex; align-items:baseline; justify-content:space-between; gap:20px; flex-wrap:wrap; border-top:1px solid var(--line);}
+.block-eyebrow{font-family:var(--f-sans); font-size:0.68rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--muted);}
+.filters{display:flex; gap:22px; flex-wrap:wrap;}
+.filter-btn{
+  font-family:var(--f-sans); font-size:0.7rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted);
+  padding-bottom:4px; border-bottom:1px solid transparent; transition:color .25s, border-color .25s;
+}
+.filter-btn:hover{color:var(--muted-2);}
+.filter-btn.active{color:var(--paper); border-color:var(--accent);}
+
+/* ---- TIMELINE ---- */
+.timeline{max-width:1100px; margin:0 auto; padding:70px 0 40px;}
+.story-row{
+  display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center;
+  padding:70px 0; border-top:1px solid var(--line); opacity:0; transform:translateY(28px);
+  transition:opacity .9s cubic-bezier(.16,.8,.3,1), transform .9s cubic-bezier(.16,.8,.3,1);
+}
+.story-row.in{opacity:1; transform:translateY(0);}
+.story-row:nth-child(even) .story-media{order:2;}
+@media (max-width:820px){
+  .story-row{grid-template-columns:1fr; gap:26px; padding:50px 0;}
+  .story-row:nth-child(even) .story-media{order:0;}
+}
+.story-media{
+  position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-lift);
+}
+.story-media img{width:100%; height:100%; object-fit:cover; filter:grayscale(0.18) contrast(1.02);}
+.story-media .placeholder-year{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--f-display); font-weight:300; font-size:clamp(3rem,7vw,5.5rem); color:rgba(244,241,234,0.14);
+}
+.story-text{max-width:44ch;}
+.story-year{font-family:var(--f-display); font-weight:300; font-size:clamp(2.4rem,4vw,3.4rem); color:var(--paper); line-height:1;}
+.story-kicker{margin-top:16px; font-family:var(--f-display); font-style:italic; font-weight:400; font-size:clamp(1.3rem,2vw,1.7rem); color:var(--paper); line-height:1.25;}
+.story-desc{margin-top:14px; font-size:0.96rem; line-height:1.75; color:var(--muted-2); max-width:42ch;}
+.story-meta{margin-top:16px; font-family:var(--f-sans); font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);}
+.read-link{
+  margin-top:20px; display:inline-flex; align-items:center; gap:8px; font-family:var(--f-sans); font-size:0.75rem;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--paper); border-bottom:1px solid var(--accent); padding-bottom:3px;
+  transition:gap .25s, color .25s;
+}
+.read-link:hover{gap:14px; color:var(--accent);}
+
+.state-line{
+  max-width:640px; margin:60px auto; text-align:center; font-family:var(--f-display); font-style:italic;
+  font-size:1.15rem; color:var(--muted); line-height:1.6;
+}
+.state-line button{font-family:var(--f-sans); font-style:normal; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border-bottom:1px solid var(--accent); margin-top:16px; display:inline-block;}
+.pulse-line{width:1px; height:60px; background:linear-gradient(var(--muted),transparent); margin:0 auto 26px; animation:stem 2s ease-in-out infinite;}
+
+/* ---- CAPSULE ---- */
+.capsule{background:var(--bg-lift); margin-top:60px; padding:120px clamp(20px,6vw,90px);}
+.capsule-inner{max-width:900px; margin:0 auto;}
+.capsule-eyebrow{font-family:var(--f-sans); font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent);}
+.capsule-title{font-family:var(--f-display); font-weight:300; font-size:clamp(2rem,5vw,3.6rem); color:var(--paper); margin-top:18px; line-height:1.05;}
+.capsule-title b{font-weight:500; font-style:italic;}
+.era-row{display:flex; gap:20px; margin-top:34px; flex-wrap:wrap;}
+.era-chip{font-family:var(--f-sans); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); padding-bottom:3px; border-bottom:1px solid transparent;}
+.era-chip.active,.era-chip:hover{color:var(--paper); border-color:var(--accent);}
+.capsule-grid{margin-top:50px; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:40px 50px;}
+.capsule-item h4{font-family:var(--f-sans); font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin:0 0 10px;}
+.capsule-item p{font-family:var(--f-display); font-weight:400; font-size:1.15rem; color:var(--muted-2); line-height:1.5; margin:0;}
+.capsule-anchor{margin-top:50px; padding-top:30px; border-top:1px solid var(--line); font-size:0.92rem; color:var(--muted-2); line-height:1.75; max-width:60ch;}
+.capsule-anchor a{color:var(--accent); border-bottom:1px solid var(--accent);}
+
+/* ---- FOOTER ---- */
+footer{padding:90px clamp(20px,6vw,90px) 60px; text-align:center;}
+footer p{font-family:var(--f-sans); font-size:0.68rem; letter-spacing:0.06em; color:var(--muted); line-height:2; max-width:60ch; margin:0 auto;}
+footer a{color:var(--accent); border-bottom:1px solid var(--accent);}
+
+/* ---- LOCATION OVERLAY ---- */
+.overlay{
+  position:fixed; inset:0; z-index:100; background:var(--bg); display:flex; align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; transition:opacity .5s ease, visibility .5s ease;
+}
+.overlay.open{opacity:1; visibility:visible;}
+.overlay-inner{width:min(560px,88vw); max-height:80vh; overflow:auto; padding:20px 4px;}
+.overlay-eyebrow{font-family:var(--f-sans); font-size:0.68rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--muted); text-align:center; margin-bottom:36px;}
+.overlay-close{position:absolute; top:28px; right:clamp(20px,5vw,56px); font-family:var(--f-sans); font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted-2);}
+.overlay-close:hover{color:var(--paper);}
+.level-list{list-style:none; margin:0 0 30px; padding:0; text-align:center;}
+.level-list li{margin:0;}
+.level-btn{
+  width:100%; font-family:var(--f-display); font-weight:300; font-size:clamp(1.6rem,4vw,2.3rem);
+  color:var(--muted); padding:12px 0; transition:color .25s;
+}
+.level-btn:hover{color:var(--muted-2);}
+.level-btn.current{color:var(--paper); font-style:italic;}
+.overlay-search{border-top:1px solid var(--line); margin-top:20px; padding-top:26px;}
+.overlay-search label{display:block; text-align:center; font-family:var(--f-sans); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:14px;}
+.overlay-search input{
+  width:100%; background:transparent; border:none; border-bottom:1px solid var(--line); color:var(--paper);
+  font-family:var(--f-display); font-size:1.2rem; text-align:center; padding:8px 4px;
+}
+.overlay-results{list-style:none; margin:18px 0 0; padding:0; text-align:center; max-height:180px; overflow:auto;}
+.overlay-results button{font-family:var(--f-sans); font-size:0.9rem; color:var(--muted-2); padding:8px 0; width:100%;}
+.overlay-results button:hover{color:var(--paper);}
+
+/* ---- READER ---- */
+.reader{
+  position:fixed; inset:0; z-index:110; background:var(--bg); overflow:auto;
+  opacity:0; visibility:hidden; transform:scale(0.98); transition:opacity .5s ease, visibility .5s ease, transform .6s cubic-bezier(.16,.8,.3,1);
+}
+.reader.open{opacity:1; visibility:visible; transform:scale(1);}
+.reader-close{
+  position:fixed; top:28px; right:clamp(20px,5vw,56px); z-index:5; font-family:var(--f-sans); font-size:0.72rem;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--muted-2);
+}
+.reader-close:hover{color:var(--paper);}
+.reader-inner{max-width:760px; margin:0 auto; padding:140px 24px 120px;}
+.reader-kicker{font-family:var(--f-sans); font-size:0.68rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--accent);}
+.reader-year{font-family:var(--f-display); font-weight:300; font-size:clamp(3rem,9vw,6rem); color:var(--paper); line-height:1; margin-top:16px;}
+.reader-media{margin-top:44px; aspect-ratio:16/9; background:var(--bg-lift); overflow:hidden; position:relative;}
+.reader-media img{width:100%; height:100%; object-fit:cover;}
+.reader-headline{margin-top:40px; font-family:var(--f-display); font-weight:500; font-size:clamp(1.7rem,3.4vw,2.5rem); color:var(--paper); line-height:1.2;}
+.reader-intro{margin-top:20px; font-family:var(--f-display); font-style:italic; font-weight:400; font-size:1.2rem; color:var(--muted-2); line-height:1.6;}
+.reader-body{margin-top:28px; font-size:1rem; line-height:1.85; color:var(--muted-2);}
+.reader-source{margin-top:50px; padding-top:26px; border-top:1px solid var(--line); font-family:var(--f-sans); font-size:0.72rem; letter-spacing:0.06em; color:var(--muted);}
+.reader-source a{color:var(--accent); border-bottom:1px solid var(--accent);}
+
+/* ---- SURPRISE BUTTON ---- */
+.surprise-float{
+  position:fixed; right:clamp(20px,4vw,44px); bottom:32px; z-index:35;
+  font-family:var(--f-sans); font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--paper);
+  padding-bottom:4px; border-bottom:1px solid var(--accent); mix-blend-mode:difference;
+}
+.surprise-float:hover{color:var(--accent);}
+
+@media (max-width:640px){
+  header{padding:20px;}
+  .head-right{gap:16px;}
+  .surprise-float{display:none;}
+}
+</style>
+</head>
+<body>
+<a href="#timeline" class="skip">Skip to today's history</a>
+<div id="live" role="status" aria-live="polite"></div>
+
+<header>
+  <a href="#top" class="mark">On This Day</a>
+  <div class="head-right">
+    <button class="loc-trigger" id="locTrigger">Vijayawada</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="hero-art"><canvas id="heroCanvas" aria-hidden="true"></canvas></div>
+    <div class="hero-content">
+      <button class="hero-date-btn" id="dateBtn">August 18, 2026</button>
+      <input type="date" id="datepicker">
+      <h1 class="hero-question">What happened here?</h1>
+      <div class="hero-loc" id="heroLocPath"></div>
+      <p class="hero-tagline">On this day, the world changed.</p>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><span class="stem"></span></div>
+  </section>
+
+  <section class="block" id="timeline-section">
+    <div class="block-head">
+      <span class="block-eyebrow" id="timelineEyebrow">Today, in Vijayawada</span>
+      <div class="filters" id="filters" role="group" aria-label="Filter by category">
+        <button class="filter-btn active" data-cat="all">All</button>
+        <button class="filter-btn" data-cat="people">People</button>
+        <button class="filter-btn" data-cat="events">Events</button>
+        <button class="filter-btn" data-cat="science">Science</button>
+        <button class="filter-btn" data-cat="arts">Arts</button>
+      </div>
+    </div>
+    <div class="timeline" id="timeline">
+      <div class="state-line"><div class="pulse-line"></div>Reading the record…</div>
+    </div>
+  </section>
+
+  <section class="capsule" id="capsule">
+    <div class="capsule-inner">
+      <span class="capsule-eyebrow">TIME CAPSULE</span>
+      <h2 class="capsule-title" id="capsuleTitle">— · <b>—</b></h2>
+      <div class="era-row" id="eraRow"></div>
+      <div class="capsule-grid" id="capsuleGrid"></div>
+      <div class="capsule-anchor" id="capsuleAnchor"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Event and biography records drawn from the Wikimedia Foundation's "On This Day" feed (Wikipedia), CC BY‑SA. Relevance to your chosen place is computed live. Follow "Source" on any story for the primary account.</p>
+</footer>
+
+<button class="surprise-float" id="surpriseFloat">Surprise Me</button>
+
+<!-- LOCATION OVERLAY -->
+<div class="overlay" id="locOverlay" role="dialog" aria-modal="true" aria-label="Choose where to look">
+  <button class="overlay-close" id="locClose">Close</button>
+  <div class="overlay-inner">
+    <div class="overlay-eyebrow">WHERE SHOULD WE LOOK?</div>
+    <ul class="level-list" id="levelList"></ul>
+    <div class="overlay-search">
+      <label for="citySearch">Or choose a different city</label>
+      <input type="text" id="citySearch" autocomplete="off" placeholder="Type a city…">
+      <ul class="overlay-results" id="cityResults"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- STORY READER -->
+<div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="Story">
+  <button class="reader-close" id="readerClose">Close ✕</button>
+  <div class="reader-inner">
+    <span class="reader-kicker" id="readerKicker">EVENT</span>
+    <div class="reader-year" id="readerYear">—</div>
+    <div class="reader-media" id="readerMediaWrap"></div>
+    <h2 class="reader-headline" id="readerHeadline"></h2>
+    <p class="reader-intro" id="readerIntro"></p>
+    <p class="reader-body" id="readerBody"></p>
+    <div class="reader-source" id="readerSource"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ===== DATA =====
+const CONTINENTS={Asia:{kw:['asia','asian']},Europe:{kw:['europe','european']},"North America":{kw:['north america']},"South America":{kw:['south america']},Africa:{kw:['africa','african']},Oceania:{kw:['oceania','pacific']}};
+const COUNTRIES={India:{continent:'Asia',kw:['india','indian']},China:{continent:'Asia',kw:['china','chinese']},Japan:{continent:'Asia',kw:['japan','japanese']},"United States":{continent:'North America',kw:['united states','u.s.','usa','american']},"United Kingdom":{continent:'Europe',kw:['united kingdom','britain','british']},France:{continent:'Europe',kw:['france','french']},Germany:{continent:'Europe',kw:['germany','german']},Australia:{continent:'Oceania',kw:['australia','australian']},Brazil:{continent:'South America',kw:['brazil','brazilian']},Nigeria:{continent:'Africa',kw:['nigeria','nigerian']}};
+const CITIES=[{id:'vijayawada',name:'Vijayawada',region:'Andhra Pradesh',country:'India',kw:['vijayawada','bezawada']},{id:'visakhapatnam',name:'Visakhapatnam',region:'Andhra Pradesh',country:'India',kw:['visakhapatnam','vizag']},{id:'hyderabad',name:'Hyderabad',region:'Telangana',country:'India',kw:['hyderabad']},{id:'mumbai',name:'Mumbai',region:'Maharashtra',country:'India',kw:['mumbai','bombay']},{id:'delhi',name:'New Delhi',region:'Delhi',country:'India',kw:['new delhi','delhi']},{id:'bengaluru',name:'Bengaluru',region:'Karnataka',country:'India',kw:['bengaluru','bangalore']},{id:'chennai',name:'Chennai',region:'Tamil Nadu',country:'India',kw:['chennai','madras']},{id:'kolkata',name:'Kolkata',region:'West Bengal',country:'India',kw:['kolkata','calcutta']},{id:'seattle',name:'Seattle',region:'Washington',country:'United States',kw:['seattle']},{id:'nyc',name:'New York City',region:'New York',country:'United States',kw:['new york city','manhattan']},{id:'sf',name:'San Francisco',region:'California',country:'United States',kw:['san francisco']},{id:'london',name:'London',region:'England',country:'United Kingdom',kw:['london']},{id:'paris',name:'Paris',region:'Île-de-France',country:'France',kw:['paris']},{id:'berlin',name:'Berlin',region:'Berlin',country:'Germany',kw:['berlin']},{id:'tokyo',name:'Tokyo',region:'Kantō',country:'Japan',kw:['tokyo']},{id:'sydney',name:'Sydney',region:'New South Wales',country:'Australia',kw:['sydney']},{id:'saopaulo',name:'São Paulo',region:'São Paulo',country:'Brazil',kw:['sao paulo','são paulo']},{id:'lagos',name:'Lagos',region:'Lagos',country:'Nigeria',kw:['lagos']}];
+function cityById(id){return CITIES.find(c=>c.id===id)||CITIES[0];}
+function levelsFor(city){const country=COUNTRIES[city.country]||{continent:'World',kw:[city.country.toLowerCase()]};return[{depth:0,label:city.name,kw:city.kw},{depth:1,label:city.region,kw:[city.region.toLowerCase()]},{depth:2,label:city.country,kw:country.kw},{depth:3,label:country.continent,kw:(CONTINENTS[country.continent]||{kw:[]}).kw},{depth:4,label:'World',kw:[]}];}
+function cumulativeKeywords(city,depth){const levels=levelsFor(city);let out=[];for(let i=0;i<=depth;i++)out=out.concat(levels[i].kw);return out;}
+
+const ERAS=[{id:'1950s',year:1956,label:'1950s',listening:'Radio serials and the first wave of film songs on gramophone records',reading:'The morning newspaper, read aloud where literacy was shared unevenly',cost:'A cinema ticket cost a matter of a few coins',tech:'The transistor radio was still a novelty; most homes had none',looked:'Narrow lanes, hand-painted shop signs, cycles far outnumbering cars',culture:'Independence was less than a decade old, and its optimism still shaped public life'},{id:'1970s',year:1974,label:'1970s',listening:'All India Radio, and cassette tapes just beginning to spread',reading:'Weekly magazines and serialized fiction in the regional press',cost:'A litre of milk cost a small handful of paise',tech:'Black-and-white television was arriving in cities, still rare elsewhere',looked:'Wider roads, early apartment blocks rising beside older courtyards',culture:'Cinema halls were the great shared entertainment of the week'},{id:'1990s',year:1994,label:'1990s',listening:'FM radio and film soundtracks on cassette',reading:'Daily newspapers, now printed in colour on Sundays',cost:'Economic liberalisation was beginning to reshape everyday prices',tech:'Landline telephones were common; the first mobile phones were years away for most',looked:'Satellite dishes beginning to appear on rooftops',culture:'Television serials drew entire neighbourhoods to a single screen'},{id:'2010s',year:2014,label:'2010s',listening:'Streamed music, arriving faster than home broadband could once manage',reading:'News increasingly read on a phone screen, mid-scroll',cost:'A smartphone was now the biggest single purchase in many households',tech:'4G networks were just beginning to reach smaller cities',looked:'Flyovers, malls and older markets standing side by side',culture:'Social media was starting to set the pace of public conversation'}];
+
+const OFFLINE={"08-18":[{year:1920,kind:'event',title:'The 19th Amendment is ratified',desc:'Tennessee becomes the decisive 36th state to ratify the 19th Amendment to the U.S. Constitution, securing the right to vote for women across the United States.',category:'events',src:'https://en.wikipedia.org/wiki/Nineteenth_Amendment_to_the_United_States_Constitution',kwHit:['united states','american']},{year:1227,kind:'death',title:'Genghis Khan',desc:'The Mongol emperor Genghis Khan dies while campaigning against the Western Xia; the exact date and cause are debated among historians.',category:'people',disputed:true,src:'https://en.wikipedia.org/wiki/Genghis_Khan',kwHit:['asia']},{year:1958,kind:'event',title:'Vladimir Nabokov publishes Lolita in the United States',desc:'After being published in Paris in 1955, Vladimir Nabokov\'s novel Lolita is released in the United States, becoming a bestseller within weeks.',category:'arts',src:'https://en.wikipedia.org/wiki/Lolita',kwHit:['united states','american']}],"08-15":[{year:1947,kind:'event',title:'India and Pakistan gain independence',desc:'British colonial rule over the Indian subcontinent ends; India and Pakistan emerge as independent nations, accompanied by mass migration and communal violence.',category:'events',src:'https://en.wikipedia.org/wiki/Indian_Independence_Act_1947',kwHit:['india','indian']}],"08-06":[{year:1945,kind:'event',title:'The atomic bombing of Hiroshima',desc:'The United States drops an atomic bomb on Hiroshima, Japan, killing tens of thousands instantly and leading, days later, to the end of the Second World War.',category:'events',src:'https://en.wikipedia.org/wiki/Atomic_bombings_of_Hiroshima_and_Nagasaki',kwHit:['japan','japanese']}],"08-09":[{year:1945,kind:'event',title:'The atomic bombing of Nagasaki',desc:'Three days after Hiroshima, the United States drops a second atomic bomb on Nagasaki, Japan.',category:'events',src:'https://en.wikipedia.org/wiki/Atomic_bombings_of_Hiroshima_and_Nagasaki',kwHit:['japan','japanese']}],"07-20":[{year:1969,kind:'event',title:'Apollo 11 lands on the Moon',desc:'Neil Armstrong and Buzz Aldrin become the first humans to walk on the Moon, watched live by roughly one-fifth of the world\'s population.',category:'science',src:'https://en.wikipedia.org/wiki/Apollo_11',kwHit:['united states','american']}],"07-04":[{year:1776,kind:'event',title:'The United States declares independence',desc:'The Second Continental Congress adopts the Declaration of Independence, formally separating the thirteen American colonies from Great Britain.',category:'events',src:'https://en.wikipedia.org/wiki/United_States_Declaration_of_Independence',kwHit:['united states','american']}],"11-09":[{year:1989,kind:'event',title:'The Berlin Wall falls',desc:'East Germany opens its borders after nearly three decades of division, and crowds begin dismantling the Berlin Wall by hand.',category:'events',src:'https://en.wikipedia.org/wiki/Berlin_Wall',kwHit:['germany','german']}],"09-11":[{year:2001,kind:'event',title:'Coordinated attacks strike the United States',desc:'Hijacked airliners are flown into the World Trade Center and the Pentagon, killing nearly three thousand people and reshaping global security policy.',category:'events',src:'https://en.wikipedia.org/wiki/September_11_attacks',kwHit:['united states','american']}],"12-07":[{year:1941,kind:'event',title:'Attack on Pearl Harbor',desc:'The Japanese navy launches a surprise attack on the American naval base at Pearl Harbor, bringing the United States into the Second World War.',category:'events',src:'https://en.wikipedia.org/wiki/Attack_on_Pearl_Harbor',kwHit:['japan','united states']}],"10-02":[{year:1869,kind:'birth',title:'Mahatma Gandhi',desc:'Mohandas Karamchand Gandhi is born in Porbandar, India; he would later lead the Indian independence movement through non-violent resistance.',category:'people',src:'https://en.wikipedia.org/wiki/Mahatma_Gandhi',kwHit:['india','indian']}],"04-12":[{year:1961,kind:'event',title:'Yuri Gagarin becomes the first human in space',desc:'Soviet cosmonaut Yuri Gagarin orbits the Earth aboard Vostok 1, becoming the first person to travel into outer space.',category:'science',src:'https://en.wikipedia.org/wiki/Vostok_1'}],"01-26":[{year:1950,kind:'event',title:'India becomes a republic',desc:'The Constitution of India comes into force, transforming the Dominion of India into the Republic of India.',category:'events',src:'https://en.wikipedia.org/wiki/Constitution_of_India',kwHit:['india','indian']}],"06-06":[{year:1944,kind:'event',title:'D-Day: the Normandy landings',desc:'Allied forces land on the beaches of Normandy, France, opening a Western front against Nazi Germany.',category:'events',src:'https://en.wikipedia.org/wiki/Normandy_landings',kwHit:['france','french']}],"05-08":[{year:1945,kind:'event',title:'Victory in Europe Day',desc:'Nazi Germany formally surrenders, ending the Second World War in Europe.',category:'events',src:'https://en.wikipedia.org/wiki/Victory_in_Europe_Day',kwHit:['germany','german']}]};
+
+// ===== STATE =====
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const state={date:new Date(),cityId:'vijayawada',depth:0,category:'all',merged:[],loading:false,error:null,era:'1970s',featured:[]};
+
+// ===== UTILS =====
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];const live=$('#live');function announce(msg){live.textContent='';requestAnimationFrame(()=>{live.textContent=msg;});}function escapeHTML(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function truncate(s,n){if(!s)return'';return s.length>n?s.slice(0,n).replace(/\s+\S*$/,'')+'…':s;}function yearLabel(y){return y<0?Math.abs(y)+' BCE':String(y);}function fmtDate(d){return`${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`.toUpperCase();}
+
+// ===== HERO CANVAS =====
+function drawHeroArt(){const canvas=$('#heroCanvas');const dpr=Math.min(window.devicePixelRatio||1,2);const rect=canvas.parentElement.getBoundingClientRect();canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);const w=rect.width,h=rect.height;const cx=w/2,cy=h*0.46;ctx.clearRect(0,0,w,h);const rings=5;for(let i=0;i<rings;i++){const r=60+i*(Math.min(w,h)*0.11);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle=`rgba(244,241,234,${0.05-i*0.006})`;ctx.lineWidth=1;ctx.stroke();}ctx.beginPath();ctx.strokeStyle='rgba(199,96,47,0.35)';ctx.lineWidth=1;ctx.moveTo(cx-w*0.32,cy+h*0.14);ctx.quadraticCurveTo(cx,cy-h*0.22,cx+w*0.32,cy+h*0.14);ctx.stroke();}
+window.addEventListener('resize',()=>{clearTimeout(window.drawTimeout);window.drawTimeout=setTimeout(drawHeroArt,200);});
+
+// ===== DATA =====
+function classify(text){if(/scientist|physicist|chemist|biolog|astronom|discover|invent|patent|nasa|space\b|telescope|mathematic|vaccine|surgeon/i.test(text))return'science';if(/film|actor|actress|director|novel|poet|author|painter|artist|music|composer|album|symphony|opera|theatre|architect|sculptor|museum|writer/i.test(text))return'arts';return'events';}
+function unify(json){const out=[];const push=(arr,kind)=>{(arr||[]).forEach(item=>{const page=(item.pages&&item.pages[0])||{};const title=kind==='event'?truncate((item.text||'').split('.')[0],90):page.normalizedtitle||'Untitled';const desc=item.text||page.description||'';const img=page.thumbnail&&page.thumbnail.source?page.thumbnail.source:(page.originalimage?page.originalimage.source:null);const src=(page.content_urls&&page.content_urls.desktop)?page.content_urls.desktop.page:null;const searchable=(title+' '+desc+' '+(page.description||'')).toLowerCase();out.push({id:`${kind}-${item.year}-${out.length}`,kind,year:item.year,title,subtitle:kind!=='event'?page.description||'':'',desc,img,src,category:kind==='event'?classify(searchable):kind==='birth'||kind==='death'?'people':classify(searchable),searchable});});};push(json.events,'event');push(json.births,'birth');push(json.deaths,'death');return out.filter(e=>typeof e.year==='number').sort((a,b)=>a.year-b.year);}
+function fromOffline(mmdd){const list=OFFLINE[mmdd]||[];return list.map((e,i)=>({id:`offline-${mmdd}-${i}`,kind:e.kind,year:e.year,title:e.title,subtitle:'',desc:e.desc,img:null,src:e.src,category:e.category,disputed:!!e.disputed,searchable:(e.title+' '+e.desc+' '+(e.kwHit||[]).join(' ')).toLowerCase()}));}
+async function fetchDay(month,day){const mm=String(month).padStart(2,'0'),dd=String(day).padStart(2,'0');const controller=new AbortController();const t=setTimeout(()=>controller.abort(),7000);try{const res=await fetch(`https://en.wikipedia.org/api/rest_v1/feed/onthisday/all/${mm}/${dd}`,{signal:controller.signal});clearTimeout(t);if(!res.ok)throw new Error('status '+res.status);const json=await res.json();const merged=unify(json);return merged.length?merged:fromOffline(`${mm}-${dd}`);}catch(err){clearTimeout(t);const offline=fromOffline(`${mm}-${dd}`);if(offline.length)return offline;throw err;}}
+
+// ===== SCORING =====
+function scoreFor(ev,kws){if(!kws.length)return 1;return kws.some(k=>ev.searchable.includes(k))?2:0;}
+function scopedList(){const city=cityById(state.cityId);const kws=cumulativeKeywords(city,state.depth);const worldwide=state.depth===4;let list=state.merged.map(e=>({e,s:worldwide?1:scoreFor(e,kws)}));if(!worldwide)list=list.filter(x=>x.s>0);return list.map(x=>x.e);}
+function byCategory(list){if(state.category==='all')return list;if(state.category==='people')return list.filter(e=>e.kind==='birth'||e.kind==='death');return list.filter(e=>e.category===state.category);}
+function pickFeatured(list){const scored=list.map(e=>({e,s:(e.img?2:0)+(e.desc&&e.desc.length>60?1:0)+(e.disputed?0:0)}));scored.sort((a,b)=>b.s-a.s);const top=scored.slice(0,Math.max(6,Math.min(9,list.length))).map(x=>x.e);return top.sort((a,b)=>a.year-b.year);}
+function headlineFor(ev,cityName,countryName){if(ev.kind==='birth')return`A life that shaped ${ev.category==='science'?'science':ev.category==='arts'?'culture':'the era'}`;if(ev.kind==='death')return`A memory ${countryName||'the world'} still carries`;if(ev.category==='science')return'A discovery that changed science';if(ev.category==='arts')return'A story that shaped culture';return`A moment that changed ${countryName||cityName||'the world'}`;}
+
+// ===== RENDER =====
+function renderHero(){$('#dateBtn').textContent=fmtDate(state.date);const iso=state.date.toISOString().slice(0,10);$('#datepicker').value=iso;const city=cityById(state.cityId);const levels=levelsFor(city);const active=levels[state.depth];$('#locTrigger').textContent=active.label;const path=document.createElement('span');path.innerHTML=levels.map((l,i)=>`<button data-depth="${i}" class="${i===state.depth?'current':''}">${escapeHTML(l.label)}</button>`).join('<span> · </span>');const holder=$('#heroLocPath');holder.innerHTML='';holder.appendChild(path);$$('button[data-depth]',holder).forEach(b=>b.addEventListener('click',()=>{setDepth(parseInt(b.dataset.depth,10));}));}
+
+let revealObserver=null;
+function renderTimeline(){const track=$('#timeline');const city=cityById(state.cityId);const levels=levelsFor(city);const scopeLabel=levels[state.depth].label;$('#timelineEyebrow').textContent=state.depth===4?'Today, across the world':`Today, in ${scopeLabel}`;if(state.loading){track.innerHTML=`<div class="state-line"><div class="pulse-line"></div>Reading the record…</div>`;return;}if(state.error){track.innerHTML=`<div class="state-line">The archive didn't answer.<br><button id="retryBtn">Try again</button></div>`;$('#retryBtn').addEventListener('click',loadDay);return;}const list=byCategory(scopedList());if(!list.length){track.innerHTML=`<div class="state-line">Nothing on record for ${escapeHTML(scopeLabel)} today.<br><button id="broadenBtn">Widen the view</button></div>`;const b=$('#broadenBtn');if(b)b.addEventListener('click',()=>{if(state.depth<4)setDepth(state.depth+1);});return;}const featured=pickFeatured(list);const countryName=state.depth<=2?city.country:null;track.innerHTML=featured.map(ev=>{const media=ev.img?`<img src="${ev.img}" alt="" loading="lazy">`:`<div class="placeholder-year">${yearLabel(ev.year)}</div>`;return`<article class="story-row" data-id="${ev.id}"><div class="story-media">${media}</div><div class="story-text"><div class="story-year">${yearLabel(ev.year)}</div><div class="story-kicker">${escapeHTML(headlineFor(ev,city.name,countryName))}</div><p class="story-desc">${escapeHTML(truncate(ev.desc,180))}</p><div class="story-meta">${ev.kind.toUpperCase()} ${ev.disputed?'· date disputed':''}</div><button class="read-link" data-id="${ev.id}">Read story →</button></div></article>`;}).join('');state.featured=featured;if(revealObserver)revealObserver.disconnect();revealObserver=new IntersectionObserver(entries=>{entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');revealObserver.unobserve(en.target);}});},{threshold:0.15});$$('.story-row',track).forEach(r=>revealObserver.observe(r));$$('.read-link',track).forEach(btn=>btn.addEventListener('click',()=>openReader(btn.dataset.id)));}
+
+function renderCapsuleEras(){$('#eraRow').innerHTML=ERAS.map(e=>`<button class="era-chip${state.era===e.id?' active':''}" data-id="${e.id}">${e.label}</button>`).join('');$$('.era-chip').forEach(b=>b.addEventListener('click',()=>{state.era=b.dataset.id;renderCapsule();}));}
+function renderCapsule(){renderCapsuleEras();const city=cityById(state.cityId);const era=ERAS.find(e=>e.id===state.era)||ERAS[1];$('#capsuleTitle').innerHTML=`${escapeHTML(city.name)} · <b>${era.year}</b>`;$('#capsuleGrid').innerHTML=`<div class="capsule-item"><h4>Listening to</h4><p>${escapeHTML(era.listening)}</p></div><div class="capsule-item"><h4>Reading</h4><p>${escapeHTML(era.reading)}</p></div><div class="capsule-item"><h4>Prices</h4><p>${escapeHTML(era.cost)}</p></div><div class="capsule-item"><h4>Technology</h4><p>${escapeHTML(era.tech)}</p></div><div class="capsule-item"><h4>The city looked like</h4><p>${escapeHTML(era.looked)}</p></div><div class="capsule-item"><h4>In the culture</h4><p>${escapeHTML(era.culture)}</p></div>`;const anchor=state.merged.filter(e=>Math.abs(e.year-era.year)<=5).sort((a,b)=>Math.abs(a.year-era.year)-Math.abs(b.year-era.year))[0];$('#capsuleAnchor').innerHTML=anchor?`Closest record from the live archive: in <b>${yearLabel(anchor.year)}</b>, ${escapeHTML(truncate(anchor.desc,160))} ${anchor.src?`<a href="${anchor.src}" target="_blank" rel="noopener">Source ↗</a>`:''}`:'';}
+
+// ===== READER =====
+function findEvent(id){return state.merged.find(e=>e.id===id)||(state.featured||[]).find(e=>e.id===id);}
+function openReader(id){const ev=findEvent(id);if(!ev)return;$('#readerKicker').textContent=ev.kind==='event'?'EVENT':ev.kind==='birth'?'BORN THIS DAY':'REMEMBERED';$('#readerYear').textContent=yearLabel(ev.year);$('#readerMediaWrap').innerHTML=ev.img?`<img src="${ev.img}" alt="">`:`<div class="placeholder-year" style="position:static;height:100%;">${yearLabel(ev.year)}</div>`;$('#readerHeadline').textContent=ev.title;const sentences=(ev.desc||'').split(/(?<=[.!?])\s+/);$('#readerIntro').textContent=sentences.slice(0,2).join(' ');$('#readerBody').textContent=sentences.slice(2).join(' ')||ev.desc||'';$('#readerSource').innerHTML=ev.src?`Source: <a href="${ev.src}" target="_blank" rel="noopener">${ev.src.replace('https://','')}</a>`:'No source recorded.';$('#reader').classList.add('open');$('#readerClose').focus();document.body.style.overflow='hidden';}
+function closeReader(){$('#reader').classList.remove('open');document.body.style.overflow='';}
+function surpriseMe(){const pool=state.merged.length?state.merged:[];if(!pool.length){announce('The archive is still loading.');return;}const pick=pool[Math.floor(Math.random()*pool.length)];openReader(pick.id);}
+
+// ===== LOCATION OVERLAY =====
+function openLocOverlay(){const city=cityById(state.cityId);const levels=levelsFor(city);$('#levelList').innerHTML=levels.map((l,i)=>`<li><button class="level-btn${i===state.depth?' current':''}" data-depth="${i}">${escapeHTML(l.label)}</button></li>`).join('');$$('.level-btn').forEach(b=>b.addEventListener('click',()=>{setDepth(parseInt(b.dataset.depth,10));closeLocOverlay();}));$('#citySearch').value='';$('#cityResults').innerHTML='';$('#locOverlay').classList.add('open');document.body.style.overflow='hidden';$('#citySearch').focus();}
+function closeLocOverlay(){$('#locOverlay').classList.remove('open');document.body.style.overflow='';}
+function wireCitySearch(){$('#citySearch').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();const results=$('#cityResults');if(!q){results.innerHTML='';return;}const matches=CITIES.filter(c=>c.name.toLowerCase().includes(q)||c.country.toLowerCase().includes(q)).slice(0,6);results.innerHTML=matches.map(c=>`<li><button data-id="${c.id}">${escapeHTML(c.name)}, ${escapeHTML(c.country)}</button></li>`).join('')||`<li style="color:var(--muted);font-family:var(--f-sans);font-size:0.8rem;">No matches</li>`;$$('button[data-id]',results).forEach(b=>b.addEventListener('click',()=>{state.cityId=b.dataset.id;state.depth=0;closeLocOverlay();onScopeChange();}));});}
+
+// ===== FLOW =====
+function setDepth(d){state.depth=Math.max(0,Math.min(4,d));onScopeChange();}
+function onScopeChange(){renderHero();renderTimeline();renderCapsule();announce(`Now viewing ${levelsFor(cityById(state.cityId))[state.depth].label}`);}
+async function loadDay(){state.loading=true;state.error=null;renderTimeline();try{state.merged=await fetchDay(state.date.getMonth()+1,state.date.getDate());state.loading=false;onScopeChange();}catch(err){state.loading=false;state.error=err.message||String(err);renderTimeline();}}
+
+// ===== INIT =====
+function wireGlobal(){$('#locTrigger').addEventListener('click',openLocOverlay);$('#locClose').addEventListener('click',closeLocOverlay);$('#locOverlay').addEventListener('click',e=>{if(e.target.id==='locOverlay')closeLocOverlay();});$('#readerClose').addEventListener('click',closeReader);$('#reader').addEventListener('click',e=>{if(e.target.id==='reader')closeReader();});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeReader();closeLocOverlay();}});$('#surpriseFloat').addEventListener('click',surpriseMe);$('a.mark').addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});$('#dateBtn').addEventListener('click',()=>{$('#datepicker').showPicker?$('#datepicker').showPicker():$('#datepicker').focus();});$('#datepicker').addEventListener('change',e=>{if(!e.target.value)return;const[y,m,d]=e.target.value.split('-').map(Number);state.date=new Date(y,m-1,d);loadDay();});$$('.filter-btn').forEach(b=>b.addEventListener('click',()=>{$$('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.category=b.dataset.cat;renderTimeline();}));wireCitySearch();}
+function boot(){drawHeroArt();wireGlobal();renderHero();renderCapsuleEras();loadDay();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+</body>
+</html>
